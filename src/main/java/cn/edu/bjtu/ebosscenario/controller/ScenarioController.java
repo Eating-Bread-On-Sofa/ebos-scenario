@@ -1,6 +1,7 @@
 package cn.edu.bjtu.ebosscenario.controller;
 
 import cn.edu.bjtu.ebosscenario.domain.Scenario;
+import cn.edu.bjtu.ebosscenario.service.LogService;
 import cn.edu.bjtu.ebosscenario.service.ScenarioService;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
@@ -17,6 +18,8 @@ public class ScenarioController {
     ScenarioService scenarioService;
     @Autowired
     RestTemplate restTemplate;
+    @Autowired
+    LogService logService;
 
     @CrossOrigin
     @PostMapping
@@ -26,12 +29,14 @@ public class ScenarioController {
         Scenario scenario = new Scenario();
         scenario.setName(name);
         scenario.setContent(content);
+        logService.info("添加了新场景："+name);
         return scenarioService.addScenario(scenario);
     }
 
     @CrossOrigin
     @DeleteMapping("/name/{name}")
     public boolean delete(@PathVariable String name){
+        logService.info("删除场景："+name);
         return scenarioService.deleteByName(name);
     }
 
@@ -44,6 +49,7 @@ public class ScenarioController {
         scenario.setName(name);
         scenario.setContent(content);
         scenarioService.changeScenario(scenario);
+        logService.info("调整了场景："+name);
     }
 
     @CrossOrigin
