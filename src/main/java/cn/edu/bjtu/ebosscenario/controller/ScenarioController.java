@@ -5,12 +5,14 @@ import cn.edu.bjtu.ebosscenario.service.LogService;
 import cn.edu.bjtu.ebosscenario.service.ScenarioService;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
+import io.swagger.annotations.Api;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestTemplate;
 
 import java.util.List;
 
+@Api(tags = "场景管理")
 @RequestMapping("/api/scenario")
 @RestController
 public class ScenarioController {
