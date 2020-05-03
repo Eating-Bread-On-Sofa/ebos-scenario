@@ -4,11 +4,14 @@ import com.alibaba.fastjson.JSONArray;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
+import java.util.Date;
+
 @Document
 public class Scenario {
     @Id
     private String name;
     private JSONArray content;
+    private Date created;
 
     public Scenario() {
     }
@@ -32,5 +35,13 @@ public class Scenario {
 
     public void setContent(JSONArray content) {
         this.content = content;
+    }
+
+    public Date getCreated() {
+        return created;
+    }
+
+    public void setCreated(Date created) {
+        this.created = created;
     }
 }

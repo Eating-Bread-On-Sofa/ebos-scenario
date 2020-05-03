@@ -6,6 +6,7 @@ import cn.edu.bjtu.ebosscenario.service.ScenarioService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.Date;
 import java.util.List;
 
 @Service
@@ -15,6 +16,7 @@ public class ScenarioServiceImpl implements ScenarioService {
     ScenarioRepository scenarioRepository;
     @Override
     public boolean addScenario(Scenario scenario) {
+        scenario.setCreated(new Date());
         Scenario scenarioTemp = scenarioRepository.findScenarioByName(scenario.getName());
         if (scenarioTemp == null) {
             scenarioRepository.save(scenario);
@@ -48,5 +50,10 @@ public class ScenarioServiceImpl implements ScenarioService {
     @Override
     public void changeScenario(Scenario scenario) {
         scenarioRepository.save(scenario);
+    }
+
+    @Override
+    public List<Scenario> findByCreatedBetween(Date start, Date end){
+        return scenarioRepository.findByCreatedBetween(start, end);
     }
 }

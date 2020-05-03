@@ -3,6 +3,7 @@ package cn.edu.bjtu.ebosscenario.service;
 import cn.edu.bjtu.ebosscenario.domain.Scenario;
 import com.alibaba.fastjson.JSONObject;
 
+import java.util.Date;
 import java.util.List;
 
 public interface ScenarioService {
@@ -11,4 +12,5 @@ public interface ScenarioService {
     List<Scenario> findAll();
     boolean deleteByName(String name);
     void changeScenario(Scenario scenario);
+    List<Scenario> findByCreatedBetween(Date start, Date end);
 }

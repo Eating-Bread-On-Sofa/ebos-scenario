@@ -4,6 +4,7 @@ import cn.edu.bjtu.ebosscenario.domain.Scenario;
 import org.springframework.data.mongodb.repository.MongoRepository;
 import org.springframework.stereotype.Repository;
 
+import java.util.Date;
 import java.util.List;
 
 @Repository
@@ -12,4 +13,5 @@ public interface ScenarioRepository extends MongoRepository<Scenario, String> {
     void deleteScenarioByName(String name);
     @Override
     List<Scenario> findAll();
+    List<Scenario> findByCreatedBetween(Date start, Date end);
 }
