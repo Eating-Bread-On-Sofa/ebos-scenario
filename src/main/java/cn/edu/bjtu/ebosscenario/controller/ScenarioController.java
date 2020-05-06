@@ -8,8 +8,11 @@ import com.alibaba.fastjson.JSONObject;
 import io.swagger.annotations.Api;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
 
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 
 @Api(tags = "场景管理")
@@ -64,6 +67,30 @@ public class ScenarioController {
     @GetMapping
     public List<Scenario> findAll(){
         return scenarioService.findAll();
+    }
+
+    @CrossOrigin
+    @GetMapping("/days")
+    public JSONArray findRecent(@RequestParam int days){
+        JSONArray jsonArray = new JSONArray();
+        Date end = new Date();
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(end);
+        for (int i = 0; i < days; i++) {
+            calendar.add(Calendar.DATE, -1);
+            Date start = calendar.getTime();
+            List<Scenario> scenarios = scenarioService.findByCreatedBetween(start,end);
+            JSONArray details = new JSONArray();
+            details.addAll(scenarios);
+            JSONObject jsonObject = new JSONObject();
+            jsonObject.put("startDate",start);
+            jsonObject.put("endDate",end);
+            jsonObject.put("details",details);
+            jsonObject.put("count",scenarios.size());
+            jsonArray.add(jsonObject);
+            end = start;
+        }
+        return jsonArray;
     }
 
     @CrossOrigin
