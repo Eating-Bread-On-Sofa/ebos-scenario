@@ -1,6 +1,5 @@
 package cn.edu.bjtu.ebosscenario.domain;
 
-import com.alibaba.fastjson.JSONArray;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
@@ -11,16 +10,11 @@ import java.util.Set;
 public class Scenario {
     @Id
     private String name;
-    private JSONArray content;
+    private Gateway[] content;
     private Date created;
     private Set<String> rules;
 
     public Scenario() {
-    }
-
-    public Scenario(String name, JSONArray content) {
-        this.name = name;
-        this.content = content;
     }
 
     public String getName() {
@@ -31,11 +25,11 @@ public class Scenario {
         this.name = name;
     }
 
-    public JSONArray getContent() {
+    public Gateway[] getContent() {
         return content;
     }
 
-    public void setContent(JSONArray content) {
+    public void setContent(Gateway[] content) {
         this.content = content;
     }
 

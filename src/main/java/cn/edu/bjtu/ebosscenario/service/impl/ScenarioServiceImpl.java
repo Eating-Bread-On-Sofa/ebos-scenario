@@ -3,7 +3,6 @@ package cn.edu.bjtu.ebosscenario.service.impl;
 import cn.edu.bjtu.ebosscenario.dao.ScenarioRepository;
 import cn.edu.bjtu.ebosscenario.domain.Scenario;
 import cn.edu.bjtu.ebosscenario.service.ScenarioService;
-import com.alibaba.fastjson.JSONArray;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
