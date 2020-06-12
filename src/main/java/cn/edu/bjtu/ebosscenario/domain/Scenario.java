@@ -5,6 +5,7 @@ import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.util.Date;
+import java.util.Set;
 
 @Document
 public class Scenario {
@@ -12,6 +13,7 @@ public class Scenario {
     private String name;
     private JSONArray content;
     private Date created;
+    private Set<String> rules;
 
     public Scenario() {
     }
@@ -43,5 +45,13 @@ public class Scenario {
 
     public void setCreated(Date created) {
         this.created = created;
+    }
+
+    public Set<String> getRules() {
+        return rules;
+    }
+
+    public void setRules(Set<String> rules) {
+        this.rules = rules;
     }
 }

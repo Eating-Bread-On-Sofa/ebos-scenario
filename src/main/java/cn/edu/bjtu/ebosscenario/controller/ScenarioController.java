@@ -10,9 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestTemplate;
 
-import java.util.Calendar;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
 @Api(tags = "场景管理")
 @RequestMapping("/api/scenario")
@@ -30,6 +28,10 @@ public class ScenarioController {
     public boolean add(@RequestBody JSONObject jsonObject) {
         String name = jsonObject.getString("name");
         JSONArray content = jsonObject.getJSONArray("content");
+        Set<String> rules = new HashSet<String>();
+        rules.add("rule1");
+        rules.add("rule2");
+        rules.add("rule3");
         Scenario scenario = new Scenario();
         scenario.setName(name);
         scenario.setContent(content);

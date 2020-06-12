@@ -3,11 +3,11 @@ package cn.edu.bjtu.ebosscenario.service.impl;
 import cn.edu.bjtu.ebosscenario.dao.ScenarioRepository;
 import cn.edu.bjtu.ebosscenario.domain.Scenario;
 import cn.edu.bjtu.ebosscenario.service.ScenarioService;
+import com.alibaba.fastjson.JSONArray;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
 @Service
 public class ScenarioServiceImpl implements ScenarioService {
@@ -55,5 +55,17 @@ public class ScenarioServiceImpl implements ScenarioService {
     @Override
     public List<Scenario> findByCreatedBetween(Date start, Date end){
         return scenarioRepository.findByCreatedBetween(start, end);
+    }
+
+    public List<Scenario> findByRules(String rule){
+        List<Scenario> res = new LinkedList<>();
+        List<Scenario> scenarioList = scenarioRepository.findAll();
+        for (Scenario scenario:scenarioList) {
+            Set<String> rules = scenario.getRules();
+            if (rules.contains(rule)){
+                res.add(scenario);
+            }
+        }
+        return res;
     }
 }
