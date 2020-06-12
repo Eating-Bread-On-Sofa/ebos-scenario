@@ -1,6 +1,6 @@
 package cn.edu.bjtu.ebosscenario.controller;
 
-import cn.edu.bjtu.ebosscenario.dao.ScenarioMessageRepo;
+
 import cn.edu.bjtu.ebosscenario.domain.Command;
 import cn.edu.bjtu.ebosscenario.domain.Gateway;
 import cn.edu.bjtu.ebosscenario.domain.Scenario;
