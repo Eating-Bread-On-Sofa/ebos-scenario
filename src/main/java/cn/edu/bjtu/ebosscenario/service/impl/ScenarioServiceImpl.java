@@ -56,12 +56,13 @@ public class ScenarioServiceImpl implements ScenarioService {
         return scenarioRepository.findByCreatedBetween(start, end);
     }
 
+    @Override
     public List<Scenario> findByRules(String rule){
         List<Scenario> res = new LinkedList<>();
         List<Scenario> scenarioList = scenarioRepository.findAll();
         for (Scenario scenario:scenarioList) {
             Set<String> rules = scenario.getRules();
-            if (rules.contains(rule)){
+            if (rules!=null && rules.contains(rule)){
                 res.add(scenario);
             }
         }

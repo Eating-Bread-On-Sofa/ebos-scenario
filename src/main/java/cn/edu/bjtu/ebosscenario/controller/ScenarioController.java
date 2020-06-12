@@ -1,10 +1,11 @@
 package cn.edu.bjtu.ebosscenario.controller;
 
+import cn.edu.bjtu.ebosscenario.dao.ScenarioMessageRepo;
 import cn.edu.bjtu.ebosscenario.domain.Command;
 import cn.edu.bjtu.ebosscenario.domain.Gateway;
 import cn.edu.bjtu.ebosscenario.domain.Scenario;
-import cn.edu.bjtu.ebosscenario.service.LogService;
-import cn.edu.bjtu.ebosscenario.service.ScenarioService;
+import cn.edu.bjtu.ebosscenario.domain.ScenarioMessage;
+import cn.edu.bjtu.ebosscenario.service.*;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import io.swagger.annotations.Api;
@@ -20,6 +21,8 @@ import java.util.*;
 public class ScenarioController {
     @Autowired
     ScenarioService scenarioService;
+    @Autowired
+    ScenarioMsgServ scenarioMsgServ;
     @Autowired
     RestTemplate restTemplate;
     @Autowired
@@ -100,5 +103,16 @@ public class ScenarioController {
             }
         }
         return readings;
+    }
+
+    @CrossOrigin
+    @GetMapping("/notice")
+    public List<ScenarioMessage> getNotice(@RequestParam int days){
+        Date end = new Date();
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(end);
+        calendar.add(Calendar.DATE, -days);
+        Date start = calendar.getTime();
+        return scenarioMsgServ.findByCreatedBetween(start,end);
     }
 }
