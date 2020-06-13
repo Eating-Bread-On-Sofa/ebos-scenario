@@ -1,8 +1,11 @@
 package cn.edu.bjtu.ebosscenario.controller;
 
+
+import cn.edu.bjtu.ebosscenario.domain.Command;
+import cn.edu.bjtu.ebosscenario.domain.Gateway;
 import cn.edu.bjtu.ebosscenario.domain.Scenario;
-import cn.edu.bjtu.ebosscenario.service.LogService;
-import cn.edu.bjtu.ebosscenario.service.ScenarioService;
+import cn.edu.bjtu.ebosscenario.domain.ScenarioMessage;
+import cn.edu.bjtu.ebosscenario.service.*;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import io.swagger.annotations.Api;
@@ -10,9 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestTemplate;
 
-import java.util.Calendar;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
 @Api(tags = "场景管理")
 @RequestMapping("/api/scenario")
@@ -21,19 +22,16 @@ public class ScenarioController {
     @Autowired
     ScenarioService scenarioService;
     @Autowired
+    ScenarioMsgServ scenarioMsgServ;
+    @Autowired
     RestTemplate restTemplate;
     @Autowired
     LogService logService;
 
     @CrossOrigin
     @PostMapping
-    public boolean add(@RequestBody JSONObject jsonObject) {
-        String name = jsonObject.getString("name");
-        JSONArray content = jsonObject.getJSONArray("content");
-        Scenario scenario = new Scenario();
-        scenario.setName(name);
-        scenario.setContent(content);
-        logService.info("添加了新场景："+name);
+    public boolean add(@RequestBody Scenario scenario) {
+        logService.info("添加了新场景："+scenario.getName());
         return scenarioService.addScenario(scenario);
     }
 
@@ -46,14 +44,9 @@ public class ScenarioController {
 
     @CrossOrigin
     @PutMapping
-    public void change(@RequestBody JSONObject jsonObject){
-        String name = jsonObject.getString("name");
-        JSONArray content = jsonObject.getJSONArray("content");
-        Scenario scenario = new Scenario();
-        scenario.setName(name);
-        scenario.setContent(content);
+    public void change(@RequestBody Scenario scenario){
         scenarioService.changeScenario(scenario);
-        logService.info("调整了场景："+name);
+        logService.info("调整了场景："+scenario.getName());
     }
 
     @CrossOrigin
@@ -97,20 +90,29 @@ public class ScenarioController {
     public JSONArray getStatus(@PathVariable String name){
         JSONArray readings = new JSONArray();
         Scenario scenario = scenarioService.findByName(name);
-        JSONArray content = scenario.getContent();
-        for (int i = 0; i < content.size(); i++) {
-            JSONObject gateway = content.getJSONObject(i);
-            String ip = gateway.getString("gatewayIP");
-            JSONArray commands = gateway.getJSONArray("commands");
-            for (int j = 0; j < commands.size(); j++) {
-                JSONObject command = commands.getJSONObject(j);
-                String deviceName = command.getString("deviceName");
-                String commandName = command.getString("commandName");
+        Gateway[] content = scenario.getContent();
+        for (Gateway gateway:content) {
+            String ip = gateway.getGatewayIP();
+            Command[] commands = gateway.getCommands();
+            for (Command command:commands) {
+                String deviceName = command.getDeviceName();
+                String commandName = command.getCommandName();
                 String url = "http://"+ip+":48082/api/v1/device/name/"+deviceName+"/command/"+commandName;
                 JSONObject result = restTemplate.getForObject(url,JSONObject.class);
                 readings.addAll(result.getJSONArray("readings"));
             }
         }
         return readings;
+    }
+
+    @CrossOrigin
+    @GetMapping("/notice")
+    public List<ScenarioMessage> getNotice(@RequestParam int days){
+        Date end = new Date();
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(end);
+        calendar.add(Calendar.DATE, -days);
+        Date start = calendar.getTime();
+        return scenarioMsgServ.findByCreatedBetween(start,end);
     }
 }
