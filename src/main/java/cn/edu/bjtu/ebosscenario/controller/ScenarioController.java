@@ -115,4 +115,10 @@ public class ScenarioController {
         Date start = calendar.getTime();
         return scenarioMsgServ.findByCreatedBetween(start,end);
     }
+
+    @CrossOrigin
+    @GetMapping("/ping")
+    public String ping(){
+        return "pong";
+    }
 }
