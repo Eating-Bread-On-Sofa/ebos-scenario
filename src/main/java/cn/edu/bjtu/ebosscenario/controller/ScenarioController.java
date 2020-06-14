@@ -1,10 +1,7 @@
 package cn.edu.bjtu.ebosscenario.controller;
 
 
-import cn.edu.bjtu.ebosscenario.domain.Command;
-import cn.edu.bjtu.ebosscenario.domain.Gateway;
-import cn.edu.bjtu.ebosscenario.domain.Scenario;
-import cn.edu.bjtu.ebosscenario.domain.ScenarioMessage;
+import cn.edu.bjtu.ebosscenario.domain.*;
 import cn.edu.bjtu.ebosscenario.service.*;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
@@ -63,8 +60,8 @@ public class ScenarioController {
 
     @CrossOrigin
     @GetMapping("/days")
-    public JSONArray findRecent(@RequestParam int days){
-        JSONArray jsonArray = new JSONArray();
+    public List<RecentScenario> findRecent(@RequestParam int days){
+        List<RecentScenario> recentScenarioList = new LinkedList<>();
         Date end = new Date();
         Calendar calendar = Calendar.getInstance();
         calendar.setTime(end);
@@ -72,17 +69,11 @@ public class ScenarioController {
             calendar.add(Calendar.DATE, -1);
             Date start = calendar.getTime();
             List<Scenario> scenarios = scenarioService.findByCreatedBetween(start,end);
-            JSONArray details = new JSONArray();
-            details.addAll(scenarios);
-            JSONObject jsonObject = new JSONObject();
-            jsonObject.put("startDate",start);
-            jsonObject.put("endDate",end);
-            jsonObject.put("details",details);
-            jsonObject.put("count",scenarios.size());
-            jsonArray.add(jsonObject);
+            RecentScenario recentScenario = new RecentScenario(start,end,scenarios);
+            recentScenarioList.add(recentScenario);
             end = start;
         }
-        return jsonArray;
+        return recentScenarioList;
     }
 
     @CrossOrigin
