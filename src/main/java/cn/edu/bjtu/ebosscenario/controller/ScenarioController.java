@@ -31,14 +31,14 @@ public class ScenarioController {
     @CrossOrigin
     @PostMapping
     public boolean add(@RequestBody Scenario scenario) {
-        logService.info("添加了新场景："+scenario.getName());
+        logService.info(null,"添加了新场景："+scenario.getName());
         return scenarioService.addScenario(scenario);
     }
 
     @CrossOrigin
     @DeleteMapping("/name/{name}")
     public boolean delete(@PathVariable String name){
-        logService.info("删除场景："+name);
+        logService.info(null,"删除场景："+name);
         return scenarioService.deleteByName(name);
     }
 
@@ -46,7 +46,7 @@ public class ScenarioController {
     @PutMapping
     public void change(@RequestBody Scenario scenario){
         scenarioService.changeScenario(scenario);
-        logService.info("调整了场景："+scenario.getName());
+        logService.info(null,"调整了场景："+scenario.getName());
     }
 
     @CrossOrigin
