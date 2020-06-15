@@ -9,6 +9,7 @@ import cn.edu.bjtu.ebosscenario.service.*;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestTemplate;
@@ -28,39 +29,42 @@ public class ScenarioController {
     @Autowired
     LogService logService;
 
+    @ApiOperation(value = "添加场景")
     @CrossOrigin
     @PostMapping
     public boolean add(@RequestBody Scenario scenario) {
         logService.info("添加了新场景："+scenario.getName());
         return scenarioService.addScenario(scenario);
     }
-
+    @ApiOperation(value = "删除场景")
     @CrossOrigin
     @DeleteMapping("/name/{name}")
     public boolean delete(@PathVariable String name){
         logService.info("删除场景："+name);
         return scenarioService.deleteByName(name);
     }
-
+    @ApiOperation(value = "更改场景")
     @CrossOrigin
     @PutMapping
     public void change(@RequestBody Scenario scenario){
         scenarioService.changeScenario(scenario);
         logService.info("调整了场景："+scenario.getName());
     }
-
+    @ApiOperation(value = "查看指定场景")
     @CrossOrigin
     @GetMapping("/name/{name}")
     public Scenario findOneScenario(@PathVariable String name){
         return scenarioService.findByName(name);
     }
 
+    @ApiOperation(value = "查看所有场景")
     @CrossOrigin
     @GetMapping
     public List<Scenario> findAll(){
         return scenarioService.findAll();
     }
 
+    @ApiOperation(value = "查看近期场景添加情况", notes = "按天数返回")
     @CrossOrigin
     @GetMapping("/days")
     public JSONArray findRecent(@RequestParam int days){
@@ -85,6 +89,7 @@ public class ScenarioController {
         return jsonArray;
     }
 
+    @ApiOperation(value = "查看场景下各读数")
     @CrossOrigin
     @GetMapping("/status/{name}")
     public JSONArray getStatus(@PathVariable String name){
@@ -105,6 +110,7 @@ public class ScenarioController {
         return readings;
     }
 
+    @ApiOperation(value = "查看场景告警")
     @CrossOrigin
     @GetMapping("/notice")
     public List<ScenarioMessage> getNotice(@RequestParam int days){
@@ -114,5 +120,12 @@ public class ScenarioController {
         calendar.add(Calendar.DATE, -days);
         Date start = calendar.getTime();
         return scenarioMsgServ.findByCreatedBetween(start,end);
+    }
+
+    @ApiOperation(value = "微服务健康检测")
+    @CrossOrigin
+    @GetMapping("/ping")
+    public String ping(){
+        return "pong";
     }
 }
