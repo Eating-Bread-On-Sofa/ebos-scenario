@@ -1,10 +1,7 @@
 package cn.edu.bjtu.ebosscenario.controller;
 
 
-import cn.edu.bjtu.ebosscenario.domain.Command;
-import cn.edu.bjtu.ebosscenario.domain.Gateway;
-import cn.edu.bjtu.ebosscenario.domain.Scenario;
-import cn.edu.bjtu.ebosscenario.domain.ScenarioMessage;
+import cn.edu.bjtu.ebosscenario.domain.*;
 import cn.edu.bjtu.ebosscenario.service.*;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
@@ -33,14 +30,14 @@ public class ScenarioController {
     @CrossOrigin
     @PostMapping
     public boolean add(@RequestBody Scenario scenario) {
-        logService.info("添加了新场景："+scenario.getName());
+        logService.info(null,"添加了新场景："+scenario.getName());
         return scenarioService.addScenario(scenario);
     }
     @ApiOperation(value = "删除场景")
     @CrossOrigin
     @DeleteMapping("/name/{name}")
     public boolean delete(@PathVariable String name){
-        logService.info("删除场景："+name);
+        logService.info(null,"删除场景："+name);
         return scenarioService.deleteByName(name);
     }
     @ApiOperation(value = "更改场景")
@@ -48,7 +45,7 @@ public class ScenarioController {
     @PutMapping
     public void change(@RequestBody Scenario scenario){
         scenarioService.changeScenario(scenario);
-        logService.info("调整了场景："+scenario.getName());
+        logService.info(null,"调整了场景："+scenario.getName());
     }
     @ApiOperation(value = "查看指定场景")
     @CrossOrigin
@@ -67,8 +64,8 @@ public class ScenarioController {
     @ApiOperation(value = "查看近期场景添加情况", notes = "按天数返回")
     @CrossOrigin
     @GetMapping("/days")
-    public JSONArray findRecent(@RequestParam int days){
-        JSONArray jsonArray = new JSONArray();
+    public List<RecentScenario> findRecent(@RequestParam int days){
+        List<RecentScenario> recentScenarioList = new LinkedList<>();
         Date end = new Date();
         Calendar calendar = Calendar.getInstance();
         calendar.setTime(end);
@@ -76,17 +73,11 @@ public class ScenarioController {
             calendar.add(Calendar.DATE, -1);
             Date start = calendar.getTime();
             List<Scenario> scenarios = scenarioService.findByCreatedBetween(start,end);
-            JSONArray details = new JSONArray();
-            details.addAll(scenarios);
-            JSONObject jsonObject = new JSONObject();
-            jsonObject.put("startDate",start);
-            jsonObject.put("endDate",end);
-            jsonObject.put("details",details);
-            jsonObject.put("count",scenarios.size());
-            jsonArray.add(jsonObject);
+            RecentScenario recentScenario = new RecentScenario(start,end,scenarios);
+            recentScenarioList.add(recentScenario);
             end = start;
         }
-        return jsonArray;
+        return recentScenarioList;
     }
 
     @ApiOperation(value = "查看场景下各读数")
