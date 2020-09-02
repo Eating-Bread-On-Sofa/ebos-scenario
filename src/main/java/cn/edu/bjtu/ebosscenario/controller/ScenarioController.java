@@ -39,14 +39,14 @@ public class ScenarioController {
     @CrossOrigin
     @PostMapping
     public boolean add(@RequestBody Scenario scenario) {
-        logService.info(null,"添加了新场景："+scenario.getName());
+        logService.info("create","添加了新场景："+scenario.getName());
         return scenarioService.addScenario(scenario);
     }
     @ApiOperation(value = "删除场景")
     @CrossOrigin
     @DeleteMapping("/name/{name}")
     public boolean delete(@PathVariable String name){
-        logService.info(null,"删除场景："+name);
+        logService.info("delete","删除场景："+name);
         return scenarioService.deleteByName(name);
     }
     @ApiOperation(value = "更改场景")
@@ -54,7 +54,7 @@ public class ScenarioController {
     @PutMapping
     public void change(@RequestBody Scenario scenario){
         scenarioService.changeScenario(scenario);
-        logService.info(null,"调整了场景："+scenario.getName());
+        logService.info("update","调整了场景："+scenario.getName());
     }
     @ApiOperation(value = "查看指定场景")
     @CrossOrigin
@@ -131,13 +131,15 @@ public class ScenarioController {
                 status.add(rawSubscribe);
                 subscribeService.save(rawSubscribe.getSubTopic());
                 threadPoolExecutor.execute(rawSubscribe);
-                logService.info(null,"设备管理微服务订阅topic：" + rawSubscribe.getSubTopic());
+                logService.info("create","场景服务成功订阅主题"+ rawSubscribe.getSubTopic());
                 return "订阅成功";
             }catch (Exception e) {
                 e.printStackTrace();
+                logService.error("create","场景服务订阅主题"+rawSubscribe.getSubTopic()+"时，参数设定有误。");
                 return "参数错误!";
             }
         }else {
+            logService.error("create","场景服务已订阅主题"+rawSubscribe.getSubTopic()+",再次订阅失败");
             return "订阅主题重复";
         }
     }
@@ -161,7 +163,6 @@ public class ScenarioController {
         synchronized (status){
             flag = status.remove(search(subTopic));
         }
-        logService.info(null,"删除设备管理上topic为"+subTopic+"的订阅");
         return flag;
     }
 
@@ -187,6 +188,7 @@ public class ScenarioController {
     @CrossOrigin
     @GetMapping("/ping")
     public String ping(){
+        logService.info("retrieve","对场景服务进行了一次健康检测");
         return "pong";
     }
 }
