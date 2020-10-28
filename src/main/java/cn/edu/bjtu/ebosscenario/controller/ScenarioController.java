@@ -188,7 +188,6 @@ public class ScenarioController {
     @CrossOrigin
     @GetMapping("/ping")
     public String ping(){
-        logService.info("retrieve","对场景服务进行了一次健康检测");
         return "pong";
     }
 }
